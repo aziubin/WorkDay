@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.time.LocalDate;
 
-class StreamDateWriter extends abstractJsonStreamSupport implements DateWriter {
+class StreamDateWriter extends AbstractJsonStreamSupport implements DateWriter {
     boolean isBof = true;
     boolean isEof = false;
     OutputStreamWriter writer;

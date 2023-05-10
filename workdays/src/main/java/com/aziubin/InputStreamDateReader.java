@@ -8,7 +8,7 @@ import java.util.Scanner;
  * todo throw DateReaderException for input ,, 
  * todo number, null?
  */
-class InputStreamDateReader extends abstractJsonStreamSupport implements DateReader {
+class InputStreamDateReader extends AbstractJsonStreamSupport implements DateReader {
     boolean isBof = true;
     boolean isEof = false;
     Scanner scanner;

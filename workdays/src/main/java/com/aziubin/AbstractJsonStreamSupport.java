@@ -2,7 +2,7 @@ package com.aziubin;
 
 import java.time.format.DateTimeFormatter;
 
-abstract class abstractJsonStreamSupport {
+abstract class AbstractJsonStreamSupport {
     final static String JSON_ARRAY_START = "[";
     final static String JSON_ARRAY_END = "]";
 
