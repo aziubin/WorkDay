@@ -13,18 +13,19 @@ class InputStreamDateReader extends AbstractJsonStreamSupport implements DateRea
     boolean isEof = false;
     Scanner scanner;
 
-    InputStreamDateReader(InputStream stream) throws Exception {
+    InputStreamDateReader(InputStream stream) {
         scanner = new Scanner(stream);
         scanner.useDelimiter(JSON_SEPARATOR_PATTERN);
     }
 
+    /**
+     * precondition: scanner.hasNext()
+     */
     private void readJsonArrayStart() throws DateReaderException {
         scanner.useDelimiter(JSON_NON_WORD_PATTERN);
-        if (scanner.hasNext()) {
-            String entry = scanner.next();
-            if (!JSON_ARRAY_START.equals(entry)) {
-                throw new DateReaderException("Unexpected token in JSON array, expected " + JSON_ARRAY_START);
-            }
+        String entry = scanner.next();
+        if (!JSON_ARRAY_START.equals(entry)) {
+            throw new DateReaderException("Unexpected token in JSON array, expected " + JSON_ARRAY_START);
         }
         scanner.useDelimiter(JSON_SEPARATOR_PATTERN);
     }

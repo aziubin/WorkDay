@@ -13,7 +13,7 @@ class StreamDateWriter extends AbstractJsonStreamSupport implements DateWriter {
     boolean isEof = false;
     OutputStreamWriter writer;
 
-    StreamDateWriter(OutputStream stream) throws Exception {
+    StreamDateWriter(OutputStream stream) {
         CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
         writer = new OutputStreamWriter(stream, encoder);
     }

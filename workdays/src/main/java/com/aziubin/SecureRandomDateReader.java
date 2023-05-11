@@ -28,7 +28,7 @@ class SecureRandomDateReader implements DateReader {
                 logger.log(Level.FINE, "Random data can not be used to create a correct date.");
             }
         }
-        throw new DateReaderException("Predefimed number of generation attempts ecceeded.");
+        throw new DateReaderException("Predefined number of generation attempts exceeded.");
     }
 
 }

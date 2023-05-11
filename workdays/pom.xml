@@ -6,10 +6,10 @@
 
   <groupId>com.aziubin</groupId>
   <artifactId>workdays</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <name>workdays</name>
-  <url>https://github.com/aziubin</url>
+  <url>https://github.com/aziubin/workday</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
