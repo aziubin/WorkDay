@@ -2,6 +2,9 @@ package com.aziubin;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Minimalistic JSON array reader and writer base class.
+ */
 abstract class AbstractJsonStreamSupport {
     final static String JSON_ARRAY_START = "[";
     final static String JSON_ARRAY_END = "]";

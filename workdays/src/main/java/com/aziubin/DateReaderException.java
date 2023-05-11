@@ -1,5 +1,8 @@
 package com.aziubin;
 
+/**
+ * Custom exception representing inconsistent states of date reader.
+ */
 class DateReaderException extends Exception {
     private static final long serialVersionUID = -203910526200577225L;
 
@@ -24,4 +27,3 @@ class DateReaderException extends Exception {
     }
 
 }
-

@@ -6,6 +6,10 @@ import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Date reader implementation, which generates specified number of random dates for testing purposes.
+ * Not each randomly generated date can be correct LocalDate, so more than one attempt can be necessary.
+ */
 class RandomDateReader implements DateReader {
     private static final Logger logger = Logger.getLogger(RandomDateReader.class.getName());
     SecureRandom random  = new SecureRandom();

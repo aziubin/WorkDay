@@ -5,15 +5,14 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
- * todo throw DateReaderException for input ,, 
- * todo number, null?
+ * Minimalistic implementation of DateReader interface, which reads from JSON stream.
  */
-class InputStreamDateReader extends AbstractJsonStreamSupport implements DateReader {
+class StreamDateReader extends AbstractJsonStreamSupport implements DateReader {
     boolean isBof = true;
     boolean isEof = false;
     Scanner scanner;
 
-    InputStreamDateReader(InputStream stream) {
+    StreamDateReader(InputStream stream) {
         scanner = new Scanner(stream);
         scanner.useDelimiter(JSON_SEPARATOR_PATTERN);
     }
@@ -46,11 +45,6 @@ class InputStreamDateReader extends AbstractJsonStreamSupport implements DateRea
                     isEof = true;
                     return null;
                 } else {
-//                    if (entry.length() < 3) {
-//                        throw new DateReaderException("JSON token is too short.");
-//                    }
-//                    CharSequence unquoted = entry.subSequence(1, entry.length() - 1); 
-//                    return LocalDate.parse(unquoted, DATE_TIME_FORMATTER);
                     return LocalDate.parse(entry, DATE_TIME_FORMATTER);
                 }
             }

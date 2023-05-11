@@ -113,7 +113,7 @@ public class WorkDayTestCase
         workDaySave.save(writer);
 
         ByteArrayInputStream iStream = new ByteArrayInputStream(oStream.toByteArray());
-        DateReader streamDateReader = new InputStreamDateReader(iStream);
+        DateReader streamDateReader = new StreamDateReader(iStream);
         TreeSetWorkDay workDayLoad = new TreeSetWorkDay(streamDateReader);
         assertEquals(workDaySave.holidaySet, workDayLoad.holidaySet);
     }
@@ -131,7 +131,7 @@ public class WorkDayTestCase
                 + "";
 
         InputStream iStream = new ByteArrayInputStream( jsonStr.getBytes() );
-        DateReader dateReader = new InputStreamDateReader(iStream);
+        DateReader dateReader = new StreamDateReader(iStream);
         assertEquals(LocalDate.of(2001, 12, 21), dateReader.read());
         assertEquals(LocalDate.of(2000, 12, 23), dateReader.read());
         assertEquals(LocalDate.of(2015, 12, 24), dateReader.read());
@@ -149,7 +149,7 @@ public class WorkDayTestCase
         writer.write(LocalDate.of(2003, 12, 21));
         writer.write(LocalDate.of(2011, 12, 21));
         writer.write(LocalDate.of(2001, 12, 21));
-        writer.setEnd();
+        writer.commit();
         String jsonStr = oStream.toString();
         assertEquals("[\"2001-12-21\",\"2015-12-21\",\"2003-12-21\",\"2011-12-21\",\"2001-12-21\"]", jsonStr);
     }

@@ -1,6 +1,12 @@
 package com.aziubin;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,6 +16,11 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Implementation, which allows customization of weekend days,
+ * which might be necessary for different cultures. 
+ * Underneath TreeSet is used for optimal search within holidays.
+ */
 public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     private static final Logger logger = Logger.getLogger(TreeSetWorkDay.class.getName());
     private static DayOfWeek[] dayOfWeekValues = DayOfWeek.values();
@@ -19,6 +30,36 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
 
     /** Holidays to assume when calculating the number of working days. */
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
+
+    /**
+     * Read holidays from a local JSON file.
+     * @param filename
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws DateReaderException
+     */
+    public long load(String filename) throws FileNotFoundException, IOException, DateReaderException {
+        File file = new File(filename);
+        try (InputStream stream = new FileInputStream(file);) {
+            DateReader reader = new StreamDateReader(stream);
+            return load(reader);
+        }
+    }
+
+    /**
+     * Write holidays to a local JSON file.
+     * @param filename
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public long save(String filename) throws FileNotFoundException, IOException {
+        File file = new File(filename);
+        try (OutputStream stream = new FileOutputStream(file);) {
+            DateWriter writer = new StreamDateWriter(stream);
+            return save(writer);
+        }
+    }
 
     TreeSetWorkDay() {
     }
@@ -45,7 +86,7 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
         load(reader);
     }
 
-    protected void load (Iterable<LocalDate> holidays) {
+    protected void load(Iterable<LocalDate> holidays) {
         for (LocalDate localDate : holidays) {
             addHoliday(localDate);
         }
@@ -78,7 +119,7 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
             writer.write(date);
             ++result;
         }
-        writer.setEnd();
+        writer.commit();
         return result;
     }
 

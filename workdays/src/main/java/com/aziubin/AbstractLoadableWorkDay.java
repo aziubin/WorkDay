@@ -2,6 +2,9 @@ package com.aziubin;
 
 import java.time.LocalDate;
 
+/**
+ * Base class for workday subclasses supporting loading of holiday dates.
+ */
 public abstract class AbstractLoadableWorkDay implements WorkDay {
 
     @Override
