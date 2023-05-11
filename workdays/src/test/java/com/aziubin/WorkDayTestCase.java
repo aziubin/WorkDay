@@ -1,14 +1,16 @@
 package com.aziubin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-
+import java.util.EnumSet;
+import java.security.SecureRandom;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -17,9 +19,56 @@ import org.junit.jupiter.api.Test;
 public class WorkDayTestCase 
 {
     private static final int NUMBER_OF_HOLIDAYS = 1089;
+    private static final int NUMBER_OF_RANDOM_TEST = 1000;
 
     @Test
-    public void testRandomSaveLoad() throws DateReaderException, IOException
+    public void eachDayHoliday () throws DateReaderException
+    {
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < NUMBER_OF_RANDOM_TEST; i++) {
+            try {
+                LocalDate holidayStartDate = RandomDateReader.getRandomDate(random);
+                LocalDate holidayFinishDate = RandomDateReader.getRandomDate(random);
+                if (holidayStartDate.isAfter(holidayFinishDate)) {
+                    LocalDate date = holidayStartDate;
+                    holidayStartDate = holidayFinishDate;
+                    holidayFinishDate = date;
+                }
+                DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
+                TreeSetWorkDay workDay = new TreeSetWorkDay(reader);
+                assertEquals(0, workDay.getWorkdays(holidayStartDate, holidayFinishDate));
+            } catch (DateTimeException e) {
+            }
+        }
+    }
+
+    @Test
+    public void eachDayWeekEnd () throws DateReaderException
+    {
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < NUMBER_OF_RANDOM_TEST; i++) {
+            try {
+                LocalDate holidayStartDate = RandomDateReader.getRandomDate(random);
+                LocalDate holidayFinishDate = RandomDateReader.getRandomDate(random);
+                if (holidayStartDate.isAfter(holidayFinishDate)) {
+                    LocalDate date = holidayStartDate;
+                    holidayStartDate = holidayFinishDate;
+                    holidayFinishDate = date;
+                }
+                DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
+                TreeSetWorkDay workDay = new TreeSetWorkDay(reader, EnumSet.allOf(DayOfWeek.class));
+
+                LocalDate rangeStartDate = RandomDateReader.getRandomDate(random);
+                LocalDate rangeFinishDate = RandomDateReader.getRandomDate(random);
+
+                assertEquals(0, workDay.getWorkdays(holidayStartDate, holidayFinishDate));
+            } catch (DateTimeException e) {
+            }
+        }
+    }
+
+    @Test
+    public void RandomSaveLoad() throws DateReaderException, IOException
     {
         DateReader reader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
         TreeSetWorkDay workDaySave = new TreeSetWorkDay(reader);
@@ -31,11 +80,11 @@ public class WorkDayTestCase
         ByteArrayInputStream iStream = new ByteArrayInputStream(oStream.toByteArray());
         DateReader streamDateReader = new InputStreamDateReader(iStream);
         TreeSetWorkDay workDayLoad = new TreeSetWorkDay(streamDateReader);
-        assertTrue(workDayLoad.holidaySet.equals(workDaySave.holidaySet));
+        assertEquals(workDaySave.holidaySet, workDayLoad.holidaySet);
     }
 
     @Test
-    public void testJsonReader() throws DateReaderException, IOException
+    public void jsonReader() throws DateReaderException, IOException
     {
         String jsonStr = "\r\n"
                 + "[ \"2001-12-21\",\"2000-12-23\"\r\n"
@@ -48,15 +97,15 @@ public class WorkDayTestCase
 
         InputStream iStream = new ByteArrayInputStream( jsonStr.getBytes() );
         DateReader dateReader = new InputStreamDateReader(iStream);
-        assertEquals(dateReader.read(), LocalDate.of(2001, 12, 21));
-        assertEquals(dateReader.read(), LocalDate.of(2000, 12, 23));
-        assertEquals(dateReader.read(), LocalDate.of(2015, 12, 24));
-        assertEquals(dateReader.read(), LocalDate.of(2000, 11, 25));
-        assertEquals(dateReader.read(), LocalDate.of(2000, 12, 26));
+        assertEquals(LocalDate.of(2001, 12, 21), dateReader.read());
+        assertEquals(LocalDate.of(2000, 12, 23), dateReader.read());
+        assertEquals(LocalDate.of(2015, 12, 24), dateReader.read());
+        assertEquals(LocalDate.of(2000, 11, 25), dateReader.read());
+        assertEquals(LocalDate.of(2000, 12, 26), dateReader.read());
     }
 
     @Test
-    public void testJsonWriter() throws DateReaderException, IOException
+    public void jsonWriter() throws DateReaderException, IOException
     {
         ByteArrayOutputStream oStream = new ByteArrayOutputStream();
         DateWriter writer = new StreamDateWriter(oStream);
@@ -67,13 +116,7 @@ public class WorkDayTestCase
         writer.write(LocalDate.of(2001, 12, 21));
         writer.setEnd();
         String jsonStr = oStream.toString();
-        assertEquals(jsonStr, "[\"2001-12-21\",\"2015-12-21\",\"2003-12-21\",\"2011-12-21\",\"2001-12-21\"]");
-    }
-
-    @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
+        assertEquals("[\"2001-12-21\",\"2015-12-21\",\"2003-12-21\",\"2011-12-21\",\"2001-12-21\"]", jsonStr);
     }
 
 }
