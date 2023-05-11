@@ -10,16 +10,52 @@ import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.EnumSet;
+import java.util.Set;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for workday library.
  */
-public class WorkDayTestCase 
+public class WorkDayTestCase
 {
     private static final int NUMBER_OF_HOLIDAYS = 1089;
     private static final int NUMBER_OF_RANDOM_TEST = 1000;
+    private static final int NUMBER_OF_WEEK_DAYS = 7;
+
+    /**
+     * Verify all possible ranges up to 3 weeks
+     * with each combination of regular weekend days.  
+     */
+    @Test
+    public void regularWeekend() throws DateReaderException
+    {
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < 1 << NUMBER_OF_WEEK_DAYS; i++) {
+            try {
+                Set<DayOfWeek> weekendSet = EnumSet.noneOf(DayOfWeek.class);
+                int bitMask = 1;
+                // Generate combination of regular weekend days following the bits of the mask.
+                for(int weekDayIdx = 1; weekDayIdx <= NUMBER_OF_WEEK_DAYS; ++weekDayIdx) {
+                    if ((i & bitMask) != 0) {
+                        weekendSet.add(DayOfWeek.of(weekDayIdx));
+                    }
+                    bitMask <<= 1;
+                }
+                TreeSetWorkDay workDay = new TreeSetWorkDay(weekendSet);
+                LocalDate startDate = RandomDateReader.getRandomDate(random);
+                LocalDate date = startDate;
+                int workDays = 0;
+                for (int j = 0; j < NUMBER_OF_WEEK_DAYS * 3; ++j) {
+                    if (!weekendSet.contains(date.getDayOfWeek())) {
+                        ++workDays;
+                    }
+                    assertEquals(workDays, workDay.getWorkdays(startDate, date));
+                    date = date.plusDays(1);
+                }
+            } catch (DateTimeException e) {}
+        }
+    }
 
     @Test
     public void eachDayHoliday () throws DateReaderException
@@ -37,8 +73,7 @@ public class WorkDayTestCase
                 DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
                 TreeSetWorkDay workDay = new TreeSetWorkDay(reader);
                 assertEquals(0, workDay.getWorkdays(holidayStartDate, holidayFinishDate));
-            } catch (DateTimeException e) {
-            }
+            } catch (DateTimeException e) {}
         }
     }
 

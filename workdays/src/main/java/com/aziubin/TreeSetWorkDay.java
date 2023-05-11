@@ -20,6 +20,9 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     /** Holidays to assume when calculating the number of working days. */
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
 
+    TreeSetWorkDay() {
+    }
+
     TreeSetWorkDay(Set<DayOfWeek> weekendSet) {
         this.weekendSet = weekendSet;
     }
@@ -48,17 +51,27 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
         }
     }
 
-    protected boolean addHoliday(LocalDate date) {
+    @Override
+    public boolean addHoliday(LocalDate date) {
         boolean result = false;
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         if (!weekendSet.contains(dayOfWeek)) {
             result = this.holidaySet.add(date);
         } else {
-            logger.log(Level.FINEST, "Holiday is ignored because it overlaps with non-working day of the week: " + date);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.log(Level.FINE, "Holiday is ignored because it overlaps with non-working day of the week: " + date);
+            }
         }
         return result;
     }
 
+    @Override
+    public long load(DateReader reader) throws DateReaderException {
+        holidaySet.clear();
+        return super.load(reader);
+    }
+
+    @Override
     public long save(DateWriter writer) throws IOException {
         int result = 0;
         for (LocalDate date : holidaySet) {
@@ -94,20 +107,20 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
      */
     @Override
     public long getWorkdays(LocalDate startDate, LocalDate endDate) {
-        long rangeDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        long rangeDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;  // compensate excluded end date.
         if (0 > rangeDays) {
             throw new IllegalArgumentException("Start date of the range is after the end date.");
         }
-        // Assume regular non working days of the week for all complete weeks;
+        // Regular non working days of the week for all complete weeks in the range.
         long workDays = rangeDays/dayOfWeekValues.length * (dayOfWeekValues.length - weekendSet.size());
 
+        // Days in the remaining incomplete week can be regular weekend days or regular working days.
         Set<DayOfWeek> incompleteWeek = getIncompleteWeek(startDate, rangeDays % dayOfWeekValues.length);
         incompleteWeek.removeAll(weekendSet);
-        long partialWeekWorkDays = incompleteWeek.size();
-        workDays += partialWeekWorkDays;
+        workDays += incompleteWeek.size();
 
         // Create a view of the date range portion of all stored holidays.
-        // This does not duplicate date entries underneath, so can be OK with huge volumes.
+        // This does not duplicate the date entries underneath, so can be OK with huge volumes.
         Set rangeHolidaySet = holidaySet.subSet(startDate, true, endDate, true);  // binary search in a red–black tree log(n).
         long rangeHolidays = rangeHolidaySet.size();
         long result = workDays - rangeHolidays;
@@ -120,3 +133,5 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     }
 
 }
+
+

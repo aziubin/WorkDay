@@ -17,6 +17,7 @@ public abstract class AbstractLoadableWorkDay implements WorkDay {
         return result;
     }
 
-    protected abstract boolean addHoliday(LocalDate date);
+    @Override
+    public abstract boolean addHoliday(LocalDate date);
 
 }
