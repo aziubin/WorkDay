@@ -6,12 +6,12 @@ import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class SecureRandomDateReader implements DateReader {
-    private static final Logger logger = Logger.getLogger(SecureRandomDateReader.class.getName());
+class RandomDateReader implements DateReader {
+    private static final Logger logger = Logger.getLogger(RandomDateReader.class.getName());
     SecureRandom random;
     int count;
 
-    SecureRandomDateReader(int count) {
+    RandomDateReader(int count) {
         random = new SecureRandom();
         this.count = count; 
     }

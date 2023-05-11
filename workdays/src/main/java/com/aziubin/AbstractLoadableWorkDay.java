@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public abstract class AbstractLoadableWorkDay implements WorkDay {
 
     @Override
-    public int load(DateReader reader) throws DateReaderException {
+    public long load(DateReader reader) throws DateReaderException {
         int result = 0;
         LocalDate date = reader.read();
         while (null != date) {

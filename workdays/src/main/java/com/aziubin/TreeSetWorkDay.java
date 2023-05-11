@@ -1,18 +1,10 @@
 package com.aziubin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.SecureRandom;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -21,30 +13,9 @@ import java.util.logging.Logger;
 public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     private static final Logger logger = Logger.getLogger(TreeSetWorkDay.class.getName());
 
+    /** Customizes the days, which are non-working days of the week, Saturday and Sunday by default. */
     protected Set<DayOfWeek> weekendSet = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
-
-    protected boolean addHoliday(LocalDate date) {
-        boolean result = false;
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        //if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
-        if (!weekendSet.contains(dayOfWeek)) {
-            result = this.holidaySet.add(date);
-        } else {
-            logger.log(Level.INFO, "Holiday is ignored because it overlaps with weekend: " + date);
-        }
-        return result;
-    }
-
-    public int save(DateWriter writer) throws IOException {
-        int result = 0;
-        for (LocalDate date : holidaySet) {
-            writer.write(date);
-            ++result;
-        }
-        writer.setEnd();
-        return result;
-    }
 
     TreeSetWorkDay(Set<DayOfWeek> weekendSet) {
         this.weekendSet = weekendSet;
@@ -70,27 +41,86 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
         this.weekendSet = weekendSet;
     }
 
-    @Override
-    public int delta(LocalDate startDate, LocalDate endDate) {
+    protected boolean addHoliday(LocalDate date) {
+        boolean result = false;
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (!weekendSet.contains(dayOfWeek)) {
+            result = this.holidaySet.add(date);
+        } else {
+            logger.log(Level.INFO, "Holiday is ignored because it overlaps with non-working day of the week: " + date);
+        }
+        return result;
+    }
+
+    public long save(DateWriter writer) throws IOException {
         int result = 0;
-        LocalDate ceiling = holidaySet.ceiling(startDate);  // binary search in a red–black tree log(n).
-        LocalDate floor = holidaySet.floor(endDate);
-        LocalDate higherDate = holidaySet.higher(endDate);
-        if (null == higherDate) {
-            higherDate = holidaySet.last(); // todo NoSuchElementException
-            //todo higherDate < startDate higherDate = startDate result ++  
+        for (LocalDate date : holidaySet) {
+            writer.write(date);
+            ++result;
+        }
+        writer.setEnd();
+        return result;
+    }
+
+    /**
+     * It is not expected a lot of computation here, so
+     * optimization for the sake of clarity and simplicity.
+     * getDayOfWeek can be heavy
+     * @return
+     */
+    long getIncompleteWeekWorkDays(LocalDate date, long weekOffset) {
+        Set<DayOfWeek> week = EnumSet.range(date.getDayOfWeek(), date.plusDays(weekOffset).getDayOfWeek());
+        week.removeAll(weekendSet);
+        return week.size();
+
+//        int result = 0;
+//        DayOfWeek.values()[date.getDayOfWeek().ordinal()];
+//        vals[(this.ordinal() + 1) % vals.length];
+//        
+//        DayOfWeek.values();
+//        for (int i = 0; i < weekOffset; ++i) {
+//            DayOfWeek dayOfWeek = date.getDayOfWeek();
+//            if (!weekendSet.contains(dayOfWeek)) {
+//                ++result;
+//            }
+//            date.plusDays(1);
+//        }
+//        return result;
+    }
+
+    /**
+     * Usually non-working days of the week are Saturday and Sunday.
+     * Assume that depending from culture, customizable non-working days are possible.
+     * @param startDate inclusive start date of the range
+     * @param endDate inclusive end date of the range
+     * 
+     * @return the number of working days in a range specified by the startDate and endDate parameters.
+     */
+    @Override
+    public long getWorkdays(LocalDate startDate, LocalDate endDate) {
+        long rangeDays = ChronoUnit.DAYS.between(startDate, endDate);
+        long workDays = rangeDays/7 * (7 - weekendSet.size()); // assume non working days of the week.
+        //long partialWeekDays = getIncompleteWeekWorkDays(startDate, rangeDays % 7);
+
+        Set<DayOfWeek> incompleteWeek = EnumSet.range(startDate.getDayOfWeek(), endDate.getDayOfWeek());
+        if (incompleteWeek.size() != 7) {
+            // partial week
+            incompleteWeek.removeAll(weekendSet);
+            long partialWeekWorkDays = incompleteWeek.size();
+            workDays -= partialWeekWorkDays;
         }
 
-        //Set customHolidays1 = holidays.subSet(startDate, higherDate);  // 2011-06-15 2011-06-23 []
-        Set customHolidays1 = holidaySet.subSet(startDate, true, endDate, true);  // binary search in a red–black tree log(n).
-        result -= customHolidays1.size();
-        //Set customHolidays2 = holidays.subSet(holidays.ceiling(startDate), holidays.floor(endDate)); // 2011-06-07 2011-06-23 [2011-06-07]
+        // Create a view of the date range portion of all stored holidays.
+        // This does not duplicate date entries underneath, so can be OK with huge volumes.
+        Set rangeHolidaySet = holidaySet.subSet(startDate, true, endDate, true);  // binary search in a red–black tree log(n).
+        long rangeHolidays = rangeHolidaySet.size();
+        long result = workDays - rangeHolidays;
         return result;
     }
 
     @Override
-    public int delta(LocalDate startDate) {
-        return delta(startDate, LocalDate.now());
+    public long getWorkdays(LocalDate startDate) {
+        return getWorkdays(startDate, LocalDate.now());
     }
 
 }

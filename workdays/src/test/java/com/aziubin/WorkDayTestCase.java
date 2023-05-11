@@ -21,7 +21,7 @@ public class WorkDayTestCase
     @Test
     public void testRandomSaveLoad() throws DateReaderException, IOException
     {
-        DateReader reader = new SecureRandomDateReader(NUMBER_OF_HOLIDAYS);
+        DateReader reader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
         TreeSetWorkDay workDaySave = new TreeSetWorkDay(reader);
 
         ByteArrayOutputStream oStream = new ByteArrayOutputStream(NUMBER_OF_HOLIDAYS * 14);
