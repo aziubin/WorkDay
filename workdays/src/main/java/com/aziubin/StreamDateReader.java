@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
- * Minimalistic implementation of DateReader interface, which reads from JSON stream.
+ * Minimalistic implementation of DateReader interface,
+ * which expects JSON array in underlying stream.
+ * Edge cases or error processing is not covered for the sake of simplicity.
  */
 class StreamDateReader extends AbstractJsonStreamSupport implements DateReader {
     boolean isBof = true;
@@ -18,6 +20,7 @@ class StreamDateReader extends AbstractJsonStreamSupport implements DateReader {
     }
 
     /**
+     * Process the start of JSON array.
      * precondition: scanner.hasNext()
      */
     private void readJsonArrayStart() throws DateReaderException {

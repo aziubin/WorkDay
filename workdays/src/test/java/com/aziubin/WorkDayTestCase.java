@@ -24,8 +24,10 @@ public class WorkDayTestCase
     private static final int NUMBER_OF_WEEK_DAYS = 7;
 
     /**
-     * Verify all possible ranges up to 3 weeks
-     * with each combination of regular weekend days.  
+     * Verify core method for all possible ranges up to 3 weeks
+     * with each combination of regular weekend days.
+     * Although this test is implementation dependent,
+     * it gives clear vision if workdays calculation is not always correct.
      */
     @Test
     public void regularWeekend() throws DateReaderException
@@ -35,6 +37,7 @@ public class WorkDayTestCase
             try {
                 Set<DayOfWeek> weekendSet = EnumSet.noneOf(DayOfWeek.class);
                 int bitMask = 1;
+
                 // Generate combination of regular weekend days following the bits of the mask.
                 for(int weekDayIdx = 1; weekDayIdx <= NUMBER_OF_WEEK_DAYS; ++weekDayIdx) {
                     if ((i & bitMask) != 0) {
@@ -42,10 +45,13 @@ public class WorkDayTestCase
                     }
                     bitMask <<= 1;
                 }
+
                 TreeSetWorkDay workDay = new TreeSetWorkDay(weekendSet);
                 LocalDate startDate = RandomDateReader.getRandomDate(random);
                 LocalDate date = startDate;
                 int workDays = 0;
+
+                // Use all date ranges from a single day up to three weeks.
                 for (int j = 0; j < NUMBER_OF_WEEK_DAYS * 3; ++j) {
                     if (!weekendSet.contains(date.getDayOfWeek())) {
                         ++workDays;
@@ -57,6 +63,12 @@ public class WorkDayTestCase
         }
     }
 
+    /**
+     * Verify the core method in situation when each day in specified range
+     * is a holiday, so expected result is zero.
+     * Use chaos engineering like approach, which might not be as fast,
+     * but allows to cover some unexpected scenarios.  
+     */
     @Test
     public void eachDayHoliday () throws DateReaderException
     {
@@ -78,6 +90,12 @@ public class WorkDayTestCase
     }
 
     @Test
+    /**
+     * Verify the core method, which returns the number of workdays in situation
+     * when each day in a week is regular non-working day, so expected result is zero.
+     * Use chaos engineering like approach, which might not be as fast,
+     * but allows to cover some unexpected scenarios.  
+     */
     public void eachDayWeekEnd () throws DateReaderException
     {
         SecureRandom random = new SecureRandom();
@@ -102,15 +120,18 @@ public class WorkDayTestCase
         }
     }
 
+    /**
+     * Verify that JSON reader correctly loads holidays saved by JSON writer when random dates are used.
+     */
     @Test
     public void RandomSaveLoad() throws DateReaderException, IOException
     {
-        DateReader reader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
-        TreeSetWorkDay workDaySave = new TreeSetWorkDay(reader);
+        DateReader randomDatereader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
+        TreeSetWorkDay workDaySave = new TreeSetWorkDay(randomDatereader);
 
         ByteArrayOutputStream oStream = new ByteArrayOutputStream(NUMBER_OF_HOLIDAYS * 14);
-        DateWriter writer = new StreamDateWriter(oStream);
-        workDaySave.save(writer);
+        DateWriter streamDateWriter = new StreamDateWriter(oStream);
+        workDaySave.save(streamDateWriter);
 
         ByteArrayInputStream iStream = new ByteArrayInputStream(oStream.toByteArray());
         DateReader streamDateReader = new StreamDateReader(iStream);
@@ -118,6 +139,9 @@ public class WorkDayTestCase
         assertEquals(workDaySave.holidaySet, workDayLoad.holidaySet);
     }
 
+    /**
+     * Verify that JSON reader can read from stream containing predefined correct JSON array.
+     */
     @Test
     public void jsonReader() throws DateReaderException, IOException
     {
@@ -139,6 +163,9 @@ public class WorkDayTestCase
         assertEquals(LocalDate.of(2000, 12, 26), dateReader.read());
     }
 
+    /**
+     * Verify that JSON writer writes correct JSON to the underlying stream.
+     */
     @Test
     public void jsonWriter() throws DateReaderException, IOException
     {

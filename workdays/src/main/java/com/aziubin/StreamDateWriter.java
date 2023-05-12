@@ -9,7 +9,9 @@ import java.nio.charset.CharsetEncoder;
 import java.time.LocalDate;
 
 /**
- * Minimalistic implementation of stream writer using JSON format.
+ * Minimalistic implementation of DateWriter interface,
+ * which writes JSON array to the underlying stream.
+ * Edge cases or error processing is not covered for the sake of simplicity.
  */
 class StreamDateWriter extends AbstractJsonStreamSupport implements DateWriter {
     boolean isBof = true;

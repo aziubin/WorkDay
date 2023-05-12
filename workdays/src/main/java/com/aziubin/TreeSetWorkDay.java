@@ -17,18 +17,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementation, which allows customization of weekend days,
+ * Implementation allowing customization of weekend days,
  * which might be necessary for different cultures. 
- * Underneath TreeSet is used for optimal search within holidays.
+ * Underneath binary tree data structure is used for optimal search
+ * within holidays having complexity O(log(n)). 
  */
 public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     private static final Logger logger = Logger.getLogger(TreeSetWorkDay.class.getName());
     private static DayOfWeek[] dayOfWeekValues = DayOfWeek.values();
 
-    /** Customizes the days, which are regularly non-working days of the week, Saturday and Sunday by default. */
+    /**
+     * Customizes regular non-working days of the week, having Saturday and Sunday by default.
+     * EnumSet is used to have best possible performance because verification is implemented
+     * as fast bit mask operations.
+     */
     protected Set<DayOfWeek> weekendSet = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 
-    /** Holidays to assume when calculating the number of working days. */
+    /**
+     * Holidays to assume when calculating the number of working days in a range.
+     * USe binary tree data structure for optimal performance.
+     */
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
 
     /**
@@ -124,23 +132,29 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
     }
 
     /**
-     * It is not expected a lot of computation here, so
-     * optimization for the sake of clarity and simplicity.
-     * getDayOfWeek can be heavy
-     * @return
+     * Enumerate days of incomplete week irrespective to weekends.
+     * @param date the day of the week from which to start enumeration.
+     * @param incompleteWeekDays the number of week days to include.
+     *     Expected value is less than 7, but higher value can be OK too.
+     * 
+     * @return the set containing incompleteWeekDays entries of week days starting from date parameter
      */
     private static Set<DayOfWeek> getIncompleteWeek(LocalDate date, long incompleteWeekDays) {
         Set<DayOfWeek> result = EnumSet.noneOf(DayOfWeek.class);
-        int dayIndex = date.getDayOfWeek().ordinal();  // avoid additional getDayOfWeek() as it contains some heavy math.
+
+        // Calculate getDayOfWeek() only once as it contains some heavy math.
+        int dayIdx = date.getDayOfWeek().ordinal();
+
+        // Avoid any conditions, allowing potential for loop unrolling.
         for (int i = 0; i < incompleteWeekDays; ++i) {
-            result.add(dayOfWeekValues[(i + dayIndex) % dayOfWeekValues.length]);
+            result.add(dayOfWeekValues[(i + dayIdx) % dayOfWeekValues.length]);
         }
         return result;
     }
 
     /**
-     * Usually non-working days of the week are Saturday and Sunday.
-     * Assume that depending from culture, customizable non-working days are possible.
+     * Usually non-working days of the week are Saturday and Sunday,
+     * but depending from culture, customizable non-working days are possible.
      * @param startDate inclusive start date of the range
      * @param endDate inclusive end date of the range
      * 
@@ -168,11 +182,5 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
         return result;
     }
 
-    @Override
-    public long getWorkdays(LocalDate startDate) {
-        return getWorkdays(startDate, LocalDate.now());
-    }
-
 }
-
 
