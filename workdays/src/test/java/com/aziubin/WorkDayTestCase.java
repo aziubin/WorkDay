@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.DateTimeException;
@@ -46,13 +47,13 @@ public class WorkDayTestCase
                     bitMask <<= 1;
                 }
 
-                TreeSetWorksays workDay = new TreeSetWorksays(weekendSet);
+                TreeSetWorkdays workDay = new TreeSetWorkdays(weekendSet);
                 LocalDate startDate = RandomDateReader.getRandomDate(random);
                 LocalDate date = startDate;
                 int workDays = 0;
 
                 // Use all date ranges from a single day up to three weeks.
-                for (int j = 0; j < NUMBER_OF_WEEK_DAYS * 3; ++j) {
+                for (int j = 0; j < NUMBER_OF_WEEK_DAYS * 3000000; ++j) {
                     if (!weekendSet.contains(date.getDayOfWeek())) {
                         ++workDays;
                     }
@@ -83,7 +84,7 @@ public class WorkDayTestCase
                     holidayFinishDate = date;
                 }
                 DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
-                TreeSetWorksays workDay = new TreeSetWorksays(reader);
+                TreeSetWorkdays workDay = new TreeSetWorkdays(reader);
                 assertEquals(0, workDay.getWorkdays(holidayStartDate, holidayFinishDate));
             } catch (DateTimeException e) {}
         }
@@ -109,7 +110,7 @@ public class WorkDayTestCase
                     holidayFinishDate = date;
                 }
                 DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
-                TreeSetWorksays workDay = new TreeSetWorksays(reader, EnumSet.allOf(DayOfWeek.class));
+                TreeSetWorkdays workDay = new TreeSetWorkdays(reader, EnumSet.allOf(DayOfWeek.class));
 
                 LocalDate rangeStartDate = RandomDateReader.getRandomDate(random);
                 LocalDate rangeFinishDate = RandomDateReader.getRandomDate(random);
@@ -127,7 +128,7 @@ public class WorkDayTestCase
     public void RandomSaveLoad() throws DateReaderException, IOException
     {
         DateReader randomDatereader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
-        TreeSetWorksays workDaySave = new TreeSetWorksays(randomDatereader);
+        TreeSetWorkdays workDaySave = new TreeSetWorkdays(randomDatereader);
 
         ByteArrayOutputStream oStream = new ByteArrayOutputStream(NUMBER_OF_HOLIDAYS * 14);
         DateWriter streamDateWriter = new StreamDateWriter(oStream);
@@ -135,7 +136,7 @@ public class WorkDayTestCase
 
         ByteArrayInputStream iStream = new ByteArrayInputStream(oStream.toByteArray());
         DateReader streamDateReader = new StreamDateReader(iStream);
-        TreeSetWorksays workDayLoad = new TreeSetWorksays(streamDateReader);
+        TreeSetWorkdays workDayLoad = new TreeSetWorkdays(streamDateReader);
         assertEquals(workDaySave.holidaySet, workDayLoad.holidaySet);
     }
 

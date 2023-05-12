@@ -10,9 +10,14 @@ import java.io.IOException;
 
 /**
  * Demo implementation of Workdays interface to demonstrate local file save and load.
- * Typically this class will not be widely used, but its parent TreeSetWorksays. 
+ * Typically this class will not be widely used, but its parent TreeSetWorkdays.
  */
-public class LocalFileWorksays extends TreeSetWorksays implements Workdays {
+public class LocalFileWorkdays extends TreeSetWorkdays implements Workdays {
+
+    LocalFileWorkdays(String filename) throws DateReaderException, FileNotFoundException, IOException {
+        load(filename);
+    }
+
     /**
      * Read holidays from a local JSON file.
      * @param filename

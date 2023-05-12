@@ -1,0 +1,179 @@
+
+Microsoft Windows [Version 10.0.18363.1556]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\aziub\git\workday\workdays>.classpath
+The system cannot execute the specified program.
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211\bin"
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+The JAVA_HOME environment variable is not defined correctly,
+this environment variable is needed to run this program.
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211\bin\"
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+The JAVA_HOME environment variable is not defined correctly,
+this environment variable is needed to run this program.
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211\bin
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+The JAVA_HOME environment variable is not defined correctly,
+this environment variable is needed to run this program.
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< com.aziubin:workdays >------------------------
+[INFO] Building workdays 0.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.1.0:clean (default-clean) @ workdays ---
+[INFO] Deleting C:\Users\aziub\git\workday\workdays\target
+[INFO]
+[INFO] --- resources:3.0.2:resources (default-resources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\main\resources
+[INFO]
+[INFO] --- compiler:3.8.0:compile (default-compile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to C:\Users\aziub\git\workday\workdays\target\classes
+[INFO]
+[INFO] --- resources:3.0.2:testResources (default-testResources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\test\resources
+[INFO]
+[INFO] --- compiler:3.8.0:testCompile (default-testCompile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\aziub\git\workday\workdays\target\test-classes
+[INFO]
+[INFO] --- surefire:2.22.1:test (default-test) @ workdays ---
+[WARNING] Parameter 'localRepository' is deprecated core expression; Avoid use of ArtifactRepository type. If you need access to local repository, switch to '${repositorySystemSession}' expression and get LRM from it instead.
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.aziubin.WorkDayTestCase
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.853 s - in com.aziubin.WorkDayTestCase
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[WARNING] Could not delete temp directory C:\Users\aziub\AppData\Local\Temp\surefire8359116137337762282 because File C:\Users\aziub\AppData\Local\Temp\surefire8359116137337762282\surefirebooter6580502876450752561.jar unable to be deleted.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.121 s
+[INFO] Finished at: 2023-05-12T11:55:13+03:00
+[INFO] ------------------------------------------------------------------------
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< com.aziubin:workdays >------------------------
+[INFO] Building workdays 0.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.1.0:clean (default-clean) @ workdays ---
+[INFO] Deleting C:\Users\aziub\git\workday\workdays\target
+[INFO]
+[INFO] --- resources:3.0.2:resources (default-resources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\main\resources
+[INFO]
+[INFO] --- compiler:3.8.0:compile (default-compile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to C:\Users\aziub\git\workday\workdays\target\classes
+[INFO]
+[INFO] --- resources:3.0.2:testResources (default-testResources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\test\resources
+[INFO]
+[INFO] --- compiler:3.8.0:testCompile (default-testCompile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\aziub\git\workday\workdays\target\test-classes
+[INFO]
+[INFO] --- surefire:2.22.1:test (default-test) @ workdays ---
+[WARNING] Parameter 'localRepository' is deprecated core expression; Avoid use of ArtifactRepository type. If you need access to local repository, switch to '${repositorySystemSession}' expression and get LRM from it instead.
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.aziubin.WorkDayTestCase
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 30.683 s - in com.aziubin.WorkDayTestCase
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  34.831 s
+[INFO] Finished at: 2023-05-12T12:01:24+03:00
+[INFO] ------------------------------------------------------------------------
+
+C:\Users\aziub\git\workday\workdays>"clean verify.cmd"
+
+C:\Users\aziub\git\workday\workdays>set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_211
+
+C:\Users\aziub\git\workday\workdays>"C:\Program Files\apache-maven-3.9.1\bin"\mvn clean test
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< com.aziubin:workdays >------------------------
+[INFO] Building workdays 0.0.2-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.1.0:clean (default-clean) @ workdays ---
+[INFO] Deleting C:\Users\aziub\git\workday\workdays\target
+[INFO]
+[INFO] --- resources:3.0.2:resources (default-resources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\main\resources
+[INFO]
+[INFO] --- compiler:3.8.0:compile (default-compile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to C:\Users\aziub\git\workday\workdays\target\classes
+[INFO]
+[INFO] --- resources:3.0.2:testResources (default-testResources) @ workdays ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\aziub\git\workday\workdays\src\test\resources
+[INFO]
+[INFO] --- compiler:3.8.0:testCompile (default-testCompile) @ workdays ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\aziub\git\workday\workdays\target\test-classes
+[INFO]
+[INFO] --- surefire:2.22.1:test (default-test) @ workdays ---
+[WARNING] Parameter 'localRepository' is deprecated core expression; Avoid use of ArtifactRepository type. If you need access to local repository, switch to '${repositorySystemSession}' expression and get LRM from it instead.
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.aziubin.WorkDayTestCase
+Profiler Agent: Waiting for connection on port 5140 (Protocol version: 15)
+Profiler Agent: Established connection with the tool
+Profiler Agent: Local accelerated session
+Profiler Agent: Connection with agent closed
+Terminate batch job (Y/N)? y
+
+C:\Users\aziub\git\workday\workdays>

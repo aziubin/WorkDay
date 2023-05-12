@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  * Underneath binary tree data structure is used for optimal search
  * within holidays having complexity O(log(n)). 
  */
-public class TreeSetWorksays extends AbstractLoadableWorkdays implements Workdays {
-    private static final Logger logger = Logger.getLogger(TreeSetWorksays.class.getName());
+public class TreeSetWorkdays extends AbstractLoadableWorkdays implements Workdays {
+    private static final Logger logger = Logger.getLogger(TreeSetWorkdays.class.getName());
     private static DayOfWeek[] dayOfWeekValues = DayOfWeek.values();
 
     /**
@@ -33,32 +33,32 @@ public class TreeSetWorksays extends AbstractLoadableWorkdays implements Workday
      */
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
 
-    TreeSetWorksays() {}
+    TreeSetWorkdays() {}
 
     /**
-     * Constructs an instance of TreeSetWorksays assuming customized weekend days.
+     * Constructs an instance of TreeSetWorkdays assuming customized weekend days.
      * @param weekendSet customized set of weekend days.
      */
-    TreeSetWorksays(Set<DayOfWeek> weekendSet) {
+    TreeSetWorkdays(Set<DayOfWeek> weekendSet) {
         this.weekendSet = weekendSet;
     }
 
     /**
-     * Constructs an instance of TreeSetWorksays assuming holiday days
+     * Constructs an instance of TreeSetWorkdays assuming holiday days
      * provided by the specified reader.
      * @param reader the reader, which provides holiday days.
      */
-    TreeSetWorksays(DateReader reader) throws DateReaderException {
+    TreeSetWorkdays(DateReader reader) throws DateReaderException {
         load(reader);
     }
 
     /**
-     * Constructs an instance of TreeSetWorksays assuming holiday days
+     * Constructs an instance of TreeSetWorkdays assuming holiday days
      * provided by the specified reader and customized weekend days.
      * @param reader the reader, which provides holiday days.
      * @param weekendSet customized set of weekend days.
      */
-    TreeSetWorksays(DateReader reader, Set<DayOfWeek> weekendSet) throws DateReaderException {
+    TreeSetWorkdays(DateReader reader, Set<DayOfWeek> weekendSet) throws DateReaderException {
         this(weekendSet);
         load(reader);
     }
@@ -96,9 +96,11 @@ public class TreeSetWorksays extends AbstractLoadableWorkdays implements Workday
 
     /**
      * Enumerate days of incomplete week irrespective to weekends.
+     * Profiler hotspot shows this method in a lost of top CPU consumers,
+     * so need to have this as optimal as possible. 
      * @param date the day of the week from which to start enumeration.
      * @param incompleteWeekDays the number of week days to include.
-     *     Expected value is less than 7, but higher value can be OK too.
+     *     Expected value is less than 7, but higher values can be OK too.
      * 
      * @return the set containing incompleteWeekDays entries of week days starting from date parameter
      */
