@@ -1,12 +1,6 @@
 package com.aziubin;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -18,12 +12,12 @@ import java.util.logging.Logger;
 
 /**
  * Implementation allowing customization of weekend days,
- * which might be necessary for different cultures. 
+ * which might be necessary for different cultures.
  * Underneath binary tree data structure is used for optimal search
  * within holidays having complexity O(log(n)). 
  */
-public class TreeSetWorkDay extends AbstractLoadableWorkDay {
-    private static final Logger logger = Logger.getLogger(TreeSetWorkDay.class.getName());
+public class TreeSetWorksays extends AbstractLoadableWorkdays implements Workdays {
+    private static final Logger logger = Logger.getLogger(TreeSetWorksays.class.getName());
     private static DayOfWeek[] dayOfWeekValues = DayOfWeek.values();
 
     /**
@@ -39,76 +33,45 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
      */
     TreeSet<LocalDate> holidaySet = new TreeSet<>();
 
-    /**
-     * Read holidays from a local JSON file.
-     * @param filename
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws DateReaderException
-     */
-    public long load(String filename) throws FileNotFoundException, IOException, DateReaderException {
-        File file = new File(filename);
-        try (InputStream stream = new FileInputStream(file);) {
-            DateReader reader = new StreamDateReader(stream);
-            return load(reader);
-        }
-    }
+    TreeSetWorksays() {}
 
     /**
-     * Write holidays to a local JSON file.
-     * @param filename
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
+     * Constructs an instance of TreeSetWorksays assuming customized weekend days.
+     * @param weekendSet customized set of weekend days.
      */
-    public long save(String filename) throws FileNotFoundException, IOException {
-        File file = new File(filename);
-        try (OutputStream stream = new FileOutputStream(file);) {
-            DateWriter writer = new StreamDateWriter(stream);
-            return save(writer);
-        }
-    }
-
-    TreeSetWorkDay() {
-    }
-
-    TreeSetWorkDay(Set<DayOfWeek> weekendSet) {
+    TreeSetWorksays(Set<DayOfWeek> weekendSet) {
         this.weekendSet = weekendSet;
     }
 
-    TreeSetWorkDay(Iterable<LocalDate> holidays) {
-        load(holidays);
-    }
-
-    TreeSetWorkDay(Iterable<LocalDate> holidays, Set<DayOfWeek> weekendSet) {
-        this(weekendSet);
-        load(holidays);
-    }
-
-    TreeSetWorkDay(DateReader reader) throws DateReaderException {
+    /**
+     * Constructs an instance of TreeSetWorksays assuming holiday days
+     * provided by the specified reader.
+     * @param reader the reader, which provides holiday days.
+     */
+    TreeSetWorksays(DateReader reader) throws DateReaderException {
         load(reader);
     }
 
-    TreeSetWorkDay(DateReader reader, Set<DayOfWeek> weekendSet) throws DateReaderException {
+    /**
+     * Constructs an instance of TreeSetWorksays assuming holiday days
+     * provided by the specified reader and customized weekend days.
+     * @param reader the reader, which provides holiday days.
+     * @param weekendSet customized set of weekend days.
+     */
+    TreeSetWorksays(DateReader reader, Set<DayOfWeek> weekendSet) throws DateReaderException {
         this(weekendSet);
         load(reader);
-    }
-
-    protected void load(Iterable<LocalDate> holidays) {
-        for (LocalDate localDate : holidays) {
-            addHoliday(localDate);
-        }
     }
 
     @Override
-    public boolean addHoliday(LocalDate date) {
+    public boolean addHoliday(LocalDate holidayDate) {
         boolean result = false;
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        DayOfWeek dayOfWeek = holidayDate.getDayOfWeek();
         if (!weekendSet.contains(dayOfWeek)) {
-            result = this.holidaySet.add(date);
+            result = this.holidaySet.add(holidayDate);
         } else {
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, "Holiday is ignored because it overlaps with non-working day of the week: " + date);
+                logger.log(Level.FINE, "Holiday is ignored because it overlaps with non-working day of the week: " + holidayDate);
             }
         }
         return result;
@@ -166,7 +129,7 @@ public class TreeSetWorkDay extends AbstractLoadableWorkDay {
         if (0 > rangeDays) {
             throw new IllegalArgumentException("Start date of the range is after the end date.");
         }
-        // Regular non working days of the week for all complete weeks in the range.
+        // Regular non-working days of the week for all complete weeks in the range.
         long workDays = rangeDays/dayOfWeekValues.length * (dayOfWeekValues.length - weekendSet.size());
 
         // Days in the remaining incomplete week can be regular weekend days or regular working days.

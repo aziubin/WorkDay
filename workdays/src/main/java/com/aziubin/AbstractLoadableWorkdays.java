@@ -3,9 +3,9 @@ package com.aziubin;
 import java.time.LocalDate;
 
 /**
- * Base class for workday subclasses supporting loading of holiday dates.
+ * Base class for workdays subclasses supporting loading of holiday dates.
  */
-public abstract class AbstractLoadableWorkDay implements WorkDay {
+public abstract class AbstractLoadableWorkdays implements Workdays {
 
     @Override
     public long load(DateReader reader) throws DateReaderException {
@@ -21,6 +21,6 @@ public abstract class AbstractLoadableWorkDay implements WorkDay {
     }
 
     @Override
-    public abstract boolean addHoliday(LocalDate date);
+    public abstract boolean addHoliday(LocalDate holidayDate);
 
 }

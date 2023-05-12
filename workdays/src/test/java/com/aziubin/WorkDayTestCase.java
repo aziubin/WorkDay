@@ -46,7 +46,7 @@ public class WorkDayTestCase
                     bitMask <<= 1;
                 }
 
-                TreeSetWorkDay workDay = new TreeSetWorkDay(weekendSet);
+                TreeSetWorksays workDay = new TreeSetWorksays(weekendSet);
                 LocalDate startDate = RandomDateReader.getRandomDate(random);
                 LocalDate date = startDate;
                 int workDays = 0;
@@ -83,7 +83,7 @@ public class WorkDayTestCase
                     holidayFinishDate = date;
                 }
                 DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
-                TreeSetWorkDay workDay = new TreeSetWorkDay(reader);
+                TreeSetWorksays workDay = new TreeSetWorksays(reader);
                 assertEquals(0, workDay.getWorkdays(holidayStartDate, holidayFinishDate));
             } catch (DateTimeException e) {}
         }
@@ -109,7 +109,7 @@ public class WorkDayTestCase
                     holidayFinishDate = date;
                 }
                 DateReader reader = new SequentialDateReader(holidayStartDate, holidayFinishDate);
-                TreeSetWorkDay workDay = new TreeSetWorkDay(reader, EnumSet.allOf(DayOfWeek.class));
+                TreeSetWorksays workDay = new TreeSetWorksays(reader, EnumSet.allOf(DayOfWeek.class));
 
                 LocalDate rangeStartDate = RandomDateReader.getRandomDate(random);
                 LocalDate rangeFinishDate = RandomDateReader.getRandomDate(random);
@@ -127,7 +127,7 @@ public class WorkDayTestCase
     public void RandomSaveLoad() throws DateReaderException, IOException
     {
         DateReader randomDatereader = new RandomDateReader(NUMBER_OF_HOLIDAYS);
-        TreeSetWorkDay workDaySave = new TreeSetWorkDay(randomDatereader);
+        TreeSetWorksays workDaySave = new TreeSetWorksays(randomDatereader);
 
         ByteArrayOutputStream oStream = new ByteArrayOutputStream(NUMBER_OF_HOLIDAYS * 14);
         DateWriter streamDateWriter = new StreamDateWriter(oStream);
@@ -135,7 +135,7 @@ public class WorkDayTestCase
 
         ByteArrayInputStream iStream = new ByteArrayInputStream(oStream.toByteArray());
         DateReader streamDateReader = new StreamDateReader(iStream);
-        TreeSetWorkDay workDayLoad = new TreeSetWorkDay(streamDateReader);
+        TreeSetWorksays workDayLoad = new TreeSetWorksays(streamDateReader);
         assertEquals(workDaySave.holidaySet, workDayLoad.holidaySet);
     }
 
